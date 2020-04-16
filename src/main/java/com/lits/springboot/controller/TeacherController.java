@@ -23,12 +23,6 @@ public class TeacherController {
         return teacherService.getOne(id);
     }
 
-    @PostMapping("/teacher")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public Teacher create(@RequestBody TeacherDto teacherDto) {
-        return teacherService.create(teacherDto.getFirstName(), teacherDto.getLastName(), teacherDto.getAge());
-    }
-
     @PutMapping("/teacher/{id}")
     public Teacher update(@PathVariable(name = "id") Integer id, @RequestBody TeacherDto teacherDto) {
         return teacherService.update(id, teacherDto.getFirstName(), teacherDto.getLastName());
@@ -45,4 +39,17 @@ public class TeacherController {
         return teacherService.getAll(sortBy);
     }
 
+    @GetMapping("/teacherBy")
+    public Teacher getBy(@RequestParam(name = "id", required = false) Integer id) {
+        return teacherService.getOne(id);
+    }
+
+    @PostMapping("/teacher")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Teacher create(@RequestBody TeacherDto teacherDto) {
+        return teacherService.create(teacherDto.getFirstName(), teacherDto.getLastName(), teacherDto.getAge());
+    }
+
+
 }
+

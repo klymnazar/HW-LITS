@@ -1,17 +1,17 @@
 package com.lits.springboot.service.impl;
 
+import com.lits.springboot.exceptions.*;
 import com.lits.springboot.model.Course;
 import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.String.format;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -25,18 +25,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course create(Course course) {
-        return courseRepository.save(course);
-    }
-
-    @Override
-    public Course getOne(Integer id) {
-        return courseRepository.findOneById(id);
-    }
-
-    @Override
     public Course update(Integer id, String newCourseName, Teacher newTeacher) {
-        Course course = courseRepository.findOneById(id);
+//        Course course = courseRepository.findOneById(id);
+        Course course = getOne(id);
         course.setCourseName(newCourseName);
         return courseRepository.save(course);
     }
@@ -63,11 +54,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course addTeachersToCourse(Integer courseId, List<Teacher> teachers) {
-        Course course = courseRepository.findOneById(courseId);
+        Course course = getOne(courseId);
         course.setTeacherList(teachers);
         return courseRepository.save(course);
     }
-
 
     @Override
     public List<Course> getAllCourses(String type, Integer numberMonths) {
@@ -102,5 +92,28 @@ public class CourseServiceImpl implements CourseService {
         }
         return courses;
     }
+
+    @Override
+    public Course create(Course course) {
+
+        if (course.getCourseName() == null || course.getStartDate() == null || course.getEndDate() == null) {
+            throw new CourseCreateException("New Course can not be created because all fields should not be null");
+        } else {
+            return courseRepository.save(course);
+        }
+    }
+
+    @Override
+    public Course getOne(Integer id) {
+        if (id == null) {
+            throw new CourseRequestException("Enter Course id");
+        } else if (id < 0) {
+            throw new CourseNotFoundException(format("Course with id : %d doesn't exist", id));
+        } else {
+            return courseRepository.findOneById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
+        }
+
+    }
+
 
 }

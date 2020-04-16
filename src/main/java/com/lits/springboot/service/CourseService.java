@@ -23,19 +23,6 @@ public interface CourseService {
 
     Course addTeachersToCourse(Integer courseId, List<Teacher> teachers);
 
-///////////////////////////////
-
-//    List<Course> getAllOrderByDate();
-//
-//    List<Course> getAllAfterDate();
-//
-//    List<Course> getAllBeforeDate();
-//
-//    List<Course> getAllContinuesNow();
-//
-//    List<Course> getAllCoursesDurationMonths(int numberMonths);
-
     List<Course> getAllCourses(String type, Integer numberMonth);
 
-//    List<Course> getAllCoursesDuration(Integer month);
 }
