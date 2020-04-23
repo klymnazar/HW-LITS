@@ -39,7 +39,7 @@ public class TeacherServiceImpl implements TeacherService {
     public void delete(Integer id) {
         teacherRepository.deleteById(id);
     }
-
+    
     @Override
     public List<Teacher> getAll(String sortBy) {
         List<Teacher> teachers;
