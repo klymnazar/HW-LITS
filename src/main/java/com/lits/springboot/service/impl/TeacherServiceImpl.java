@@ -44,7 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
     public List<TeacherDto> getAll(String sortBy) {
         List<Teacher> teachers;
         if (("age").equals(sortBy)) {
-            Sort sortByAge = Sort.by(sortBy).descending();
+            Sort sortByAge = Sort.by(sortBy).ascending();
             teachers = teacherRepository.findAll(sortByAge);
         } else {
             teachers = teacherRepository.findAll();
