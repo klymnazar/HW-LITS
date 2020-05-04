@@ -3,7 +3,7 @@ package com.lits.springboot.controller;
 import com.lits.springboot.dto.CourseDto;
 import com.lits.springboot.dto.TeacherDto;
 import com.lits.springboot.exceptions.TeacherCreateException;
-import com.lits.springboot.model.Teacher;
+//import com.lits.springboot.model.Teacher;
 import com.lits.springboot.service.CourseService;
 import com.lits.springboot.service.TeacherService;
 import org.springframework.http.HttpStatus;
