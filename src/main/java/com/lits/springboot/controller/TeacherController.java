@@ -56,8 +56,6 @@ public class TeacherController {
 //        return teacherService.create(teacherDto.getFirstName(), teacherDto.getLastName(), teacherDto.getAge());
 //    }
 
-
-
     @PostMapping("/teachers")
     @ResponseStatus(value = HttpStatus.CREATED)
     public TeacherDto create(@RequestBody TeacherDto teacherDto) {
@@ -67,7 +65,6 @@ public class TeacherController {
             return teacherService.create(teacherDto.getFirstName(), teacherDto.getLastName(), teacherDto.getAge());
         }
     }
-
 
     @PutMapping("/teachers/{id}/courses")
     public TeacherDto addCourses(@PathVariable(name = "id") Integer teacherId, @RequestBody TeacherDto teacherDto) {
