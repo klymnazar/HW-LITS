@@ -1,44 +1,43 @@
 package com.lits.springboot.service.impl;
 
+import com.lits.springboot.dto.CourseDto;
+import com.lits.springboot.dto.TeacherDto;
+import com.lits.springboot.exceptions.*;
 import com.lits.springboot.model.Course;
 import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
-import org.springframework.data.domain.Sort;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Service
+@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
+    private final ModelMapper modelMapper;
 
-    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository) {
-        this.courseRepository = courseRepository;
-        this.teacherRepository = teacherRepository;
-    }
-
-    @Override
-    public Course create(Course course) {
-        return courseRepository.save(course);
-    }
+//    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, ModelMapper modelMapper) {
+//        this.courseRepository = courseRepository;
+//        this.teacherRepository = teacherRepository;
+//        this.modelMapper = modelMapper;
+//    }
 
     @Override
-    public Course getOne(Integer id) {
-        return courseRepository.findOneById(id);
-    }
-
-    @Override
-    public Course update(Integer id, String newCourseName, Teacher newTeacher) {
-        Course course = courseRepository.findOneById(id);
+    public CourseDto update(Integer id, String newCourseName) {
+        Course course = modelMapper.map(getOne(id), Course.class);
         course.setCourseName(newCourseName);
-        return courseRepository.save(course);
+        return modelMapper.map(courseRepository.save(course), CourseDto.class);
     }
 
     @Override
@@ -47,8 +46,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAll() {
-        return courseRepository.findAll();
+    public List<CourseDto> getAll() {
+        List<Course> courses = courseRepository.findAll();
+        return courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -62,15 +62,23 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course addTeachersToCourse(Integer courseId, List<Teacher> teachers) {
+    public CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds) {
         Course course = courseRepository.findOneById(courseId);
+//        List<Teacher> teachers = teacherRepository.findAllByCourseIdEquals(courseId);
+                List<Teacher> teachers = new ArrayList<>();
+        for (Integer teacherId : teacherIds) {
+            teachers.add(teacherRepository.findOneById(teacherId));
+        }
         course.setTeacherList(teachers);
-        return courseRepository.save(course);
+        courseRepository.save(course);
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        courseDto.setTeacherIds(teacherIds);
+        return courseDto;
+
     }
 
-
     @Override
-    public List<Course> getAllCourses(String type, Integer numberMonths) {
+    public List<CourseDto> getAllCourses(String type, Integer numberMonths) {
         LocalDate now = LocalDate.now();
         List<Course> courses;
 
@@ -81,7 +89,7 @@ public class CourseServiceImpl implements CourseService {
         } else {
             courses = courseRepository.findAllByOrderByStartDateAsc();
         }
-        return courses;
+        return courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
     }
 
     private List<Course> getCourseListByDurationType(String type, LocalDate now) {
@@ -101,6 +109,28 @@ public class CourseServiceImpl implements CourseService {
                 break;
         }
         return courses;
+    }
+
+    @Override
+    public CourseDto create(CourseDto courseDto) {
+        if (courseDto.getCourseName() == null || courseDto.getStartDate() == null || courseDto.getEndDate() == null) {
+            throw new CourseCreateException("New Course can not be created because all fields should not be null");
+        } else {
+            return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
+        }
+    }
+
+    @Override
+    public CourseDto getOne(Integer id) {
+        Course course;
+        if (id == null) {
+            throw new CourseRequestException("Enter Course id");
+        } else if (id < 0) {
+            throw new CourseNotFoundException(format("Course with id : %d doesn't exist", id));
+        } else {
+            course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
+            return modelMapper.map(course, CourseDto.class);
+        }
     }
 
 }
