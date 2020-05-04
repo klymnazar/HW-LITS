@@ -21,41 +21,45 @@ public class CourseController {
         this.teacherService = teacherService;
     }
 
-    @GetMapping("/course/{id}")
+    @GetMapping("/courses/{id}")
     public CourseDto getById(@PathVariable(name = "id") Integer id) {
         return courseService.getOne(id);
     }
 
-    @PostMapping("/course")
+    @PostMapping("/courses")
     @ResponseStatus(value = HttpStatus.CREATED)
     public CourseDto create(@RequestBody CourseDto courseDto) {
         return courseService.create(courseDto);
     }
 
-    @PutMapping("/course/{id}")
+    @PutMapping("/courses/{id}")
     public CourseDto update(@PathVariable(name = "id") Integer id, @RequestBody CourseDto courseDto) {
         return courseService.update(id, courseDto.getCourseName());
     }
 
-    @DeleteMapping("/course/{id}")
+    @DeleteMapping("/courses/{id}")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void delete(@PathVariable(name = "id") Integer id) {
         courseService.delete(id);
     }
 
-    @GetMapping("/allCourses")
-    public List<CourseDto> getAll() {
-        return courseService.getAll();
+//    @GetMapping("/allCourses")
+//    public List<CourseDto> getAll() {
+//        return courseService.getAll();
+//    }
+
+
+    @PutMapping("/courses/{id}/teachers")
+    public CourseDto addTeachers(@PathVariable(name = "id") Integer courseId, @RequestBody CourseDto courseDto) {
+        List<Integer> teacherIds = new ArrayList<>();
+        for (Integer teacherId : courseDto.getTeacherIds()) {
+            teacherIds.add(teacherService.getOne(teacherId).getId());
+        }
+        return courseService.addTeachersToCourse(courseId, teacherIds);
     }
 
-    @PutMapping("/course/{id}/teachers")
-    public CourseDto addTeachers(@PathVariable(name = "id") Integer courseId, @RequestBody CourseDto courseDto) {
-        List<TeacherDto> teacherDtos = new ArrayList<>();
-        for (Integer teacherId : courseDto.getTeacherIds()) {
-            teacherDtos.add(teacherService.getOne(teacherId));
-        }
-        return courseService.addTeachersToCourse(courseId, teacherDtos);
-    }
+
+
 
     @GetMapping("/courses")
     public List<CourseDto> getAllCourses(@RequestParam(name = "durationType", required = false) String durationType,

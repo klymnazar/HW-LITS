@@ -5,6 +5,7 @@ import com.lits.springboot.exceptions.TeacherCreateException;
 import com.lits.springboot.exceptions.TeacherNotFoundException;
 import com.lits.springboot.exceptions.TeacherRequestException;
 import com.lits.springboot.model.Teacher;
+import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.TeacherService;
 import org.assertj.core.api.Assertions;
@@ -38,9 +39,12 @@ public class TeacherServiceImplTest {
     @InjectMocks
     private ModelMapper modelMapper;
 
+    @Mock
+    private CourseRepository courseRepository;
+
     @Before
     public void init() {
-        teacherService = new TeacherServiceImpl(teacherRepository, modelMapper);
+        teacherService = new TeacherServiceImpl(teacherRepository, modelMapper, courseRepository);
     }
 
     @Test
@@ -52,7 +56,7 @@ public class TeacherServiceImplTest {
         teacher.setAge(21);
         teacher.setId(1);
 
-        when(teacherRepository.findOneById(1)).thenReturn(teacher);
+        when(teacherRepository.findOneById(eq(1))).thenReturn(teacher);
         when(teacherRepository.save(teacher)).thenReturn(teacher);
 
         //Act
@@ -73,8 +77,8 @@ public class TeacherServiceImplTest {
         teacher.setAge(21);
         teacher.setId(1);
 
-        when(teacherRepository.findOneById(1)).thenReturn(teacher);
-        when(teacherRepository.save(teacher)).thenReturn(teacher);
+        when(teacherRepository.findOneById(eq(1))).thenReturn(teacher);
+        when(teacherRepository.save(eq(teacher))).thenReturn(teacher);
 
         //Act
         teacherDto = teacherService.update(1, "John", "Duck");
@@ -95,7 +99,7 @@ public class TeacherServiceImplTest {
         teacher.setAge(21);
         teacher.setId(1);
 
-        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
+        when(teacherRepository.findById(eq(1))).thenReturn(Optional.of(teacher));
 
         //Act
         teacherDto = teacherService.getOne(1);
@@ -106,22 +110,50 @@ public class TeacherServiceImplTest {
         Assert.assertEquals(Integer.valueOf(21), teacherDto.getAge());
     }
 
+//    @Test
+//    public void create_teacher_teacherDto() {
+//        //Arrange
+//        String firstName = "Donald";
+//        String lastName = "Duck";
+//        Integer age = 30;
+//        Integer id = 1;
+//
+//        when(teacherRepository.save(new Teacher(firstName, lastName, age))).thenReturn(new Teacher(id, firstName, lastName, age));
+//
+//        //Act
+//        teacherDto = teacherService.create(firstName, lastName, age);
+//
+//        //Assert
+//        Assert.assertEquals("Donald", teacherDto.getFirstName());
+//        Assert.assertEquals("Duck", teacherDto.getLastName());
+//        Assert.assertEquals(Integer.valueOf(30), teacherDto.getAge());
+//    }
+
+
     @Test
     public void create_teacher_teacherDto() {
         //Arrange
         String firstName = "Donald";
         String lastName = "Duck";
         Integer age = 30;
+        Integer id = 1;
 
-        when(teacherRepository.save(new Teacher(firstName, lastName, age))).thenReturn(new Teacher(firstName, lastName, age));
+        Teacher teacher = new Teacher();
+        teacher.setFirstName(firstName);
+        teacher.setLastName(lastName);
+        teacher.setAge(age);
+        teacher.setId(id);
+
+        when(teacherRepository.save(new Teacher(firstName, lastName, age))).thenReturn(teacher);
 
         //Act
         teacherDto = teacherService.create(firstName, lastName, age);
 
         //Assert
-        Assert.assertEquals("Donald", teacherDto.getFirstName());
-        Assert.assertEquals("Duck", teacherDto.getLastName());
-        Assert.assertEquals(Integer.valueOf(30), teacherDto.getAge());
+        Assert.assertEquals(id, teacherDto.getId());
+        Assert.assertEquals(firstName, teacherDto.getFirstName());
+        Assert.assertEquals(lastName, teacherDto.getLastName());
+        Assert.assertEquals(age, teacherDto.getAge());
     }
 
     @Test
@@ -177,34 +209,34 @@ public class TeacherServiceImplTest {
         Assertions.assertThat(thrown).isInstanceOf(TeacherNotFoundException.class);
     }
 
-    @Test
-    public void create_nullFirstName_CreateException() {
-        //Arrange
-//        init();
-        //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create(null, "Smith", 21));
-        //Assert
-        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
-    }
-
-    @Test
-    public void create_nullLastName_CreateException() {
-        //Arrange
-//        init();
-        //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create("John", null, 21));
-        //Assert
-        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
-    }
-
-    @Test
-    public void create_nullAge_CreateException() {
-        //Arrange
-//        init();
-        //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create("John", "Smith", null));
-        //Assert
-        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
-    }
+//    @Test
+//    public void create_nullFirstName_CreateException() {
+//        //Arrange
+////        init();
+//        //Act
+//        Throwable thrown = catchThrowable(() -> teacherService.create(null, "Smith", 21));
+//        //Assert
+//        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
+//    }
+//
+//    @Test
+//    public void create_nullLastName_CreateException() {
+//        //Arrange
+////        init();
+//        //Act
+//        Throwable thrown = catchThrowable(() -> teacherService.create("John", null, 21));
+//        //Assert
+//        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
+//    }
+//
+//    @Test
+//    public void create_nullAge_CreateException() {
+//        //Arrange
+////        init();
+//        //Act
+//        Throwable thrown = catchThrowable(() -> teacherService.create("John", "Smith", null));
+//        //Assert
+//        Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
+//    }
 
 }

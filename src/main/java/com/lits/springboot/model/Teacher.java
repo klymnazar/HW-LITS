@@ -32,8 +32,8 @@ public class Teacher implements Serializable {
     private Integer age;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "teacher_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")})
+    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "teacherId")},
+            inverseJoinColumns = {@JoinColumn(name = "courseId")})
     private List<Course> courseList;
 
     public Teacher(String firstName, String lastName, Integer age) {

@@ -15,7 +15,8 @@ public interface CourseService {
     List<CourseDto> getAll();
     List<String> getAllCoursesWithoutTeacher();
     Course updateCourseTeacher(Integer courseId, Integer teacherId);
-    CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos);
+//    CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos);
+CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds);
     List<CourseDto> getAllCourses(String type, Integer numberMonth);
 
 }

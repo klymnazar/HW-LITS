@@ -12,7 +12,9 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends CrudRepository<Course, Integer> {
 
-    Optional<Course> findOneById(Integer id);
+    Course findOneById(Integer id);
+
+    Optional<Course> findById(Integer id);
 
     List<Course> findAll();
 

@@ -28,8 +28,8 @@ public class Course {
     private LocalDate endDate;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "course_id")},
-            inverseJoinColumns = {@JoinColumn(name = "teacher_id")})
+    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "courseId")},
+            inverseJoinColumns = {@JoinColumn(name = "teacherId")})
     private List<Teacher> teacherList;
 
 }

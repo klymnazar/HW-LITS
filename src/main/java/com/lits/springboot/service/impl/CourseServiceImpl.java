@@ -4,30 +4,34 @@ import com.lits.springboot.dto.CourseDto;
 import com.lits.springboot.dto.TeacherDto;
 import com.lits.springboot.exceptions.*;
 import com.lits.springboot.model.Course;
+import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
 @Service
+@RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
     private final ModelMapper modelMapper;
 
-    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, ModelMapper modelMapper) {
-        this.courseRepository = courseRepository;
-        this.teacherRepository = teacherRepository;
-        this.modelMapper = modelMapper;
-    }
+//    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, ModelMapper modelMapper) {
+//        this.courseRepository = courseRepository;
+//        this.teacherRepository = teacherRepository;
+//        this.modelMapper = modelMapper;
+//    }
 
     @Override
     public CourseDto update(Integer id, String newCourseName) {
@@ -58,10 +62,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos) {
-        CourseDto courseDto = getOne(courseId);
-        courseDto.setTeacherDtos(teacherDtos);
-        return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
+    public CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds) {
+        Course course = courseRepository.findOneById(courseId);
+//        List<Teacher> teachers = teacherRepository.findAllByCourseIdEquals(courseId);
+                List<Teacher> teachers = new ArrayList<>();
+        for (Integer teacherId : teacherIds) {
+            teachers.add(teacherRepository.findOneById(teacherId));
+        }
+        course.setTeacherList(teachers);
+        courseRepository.save(course);
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        courseDto.setTeacherIds(teacherIds);
+        return courseDto;
+
     }
 
     @Override
@@ -115,7 +128,7 @@ public class CourseServiceImpl implements CourseService {
         } else if (id < 0) {
             throw new CourseNotFoundException(format("Course with id : %d doesn't exist", id));
         } else {
-            course = courseRepository.findOneById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
+            course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
             return modelMapper.map(course, CourseDto.class);
         }
     }

@@ -1,5 +1,6 @@
 package com.lits.springboot.service;
 
+import com.lits.springboot.dto.CourseDto;
 import com.lits.springboot.dto.TeacherDto;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface TeacherService {
     List<TeacherDto> getAll(String sortBy);
     TeacherDto create(String firstName, String lastName, Integer age);
 
+    TeacherDto addCourseToTeacher(Integer teacherId, List<Integer> courseIds);
 }

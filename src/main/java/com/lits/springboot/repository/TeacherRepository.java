@@ -19,4 +19,6 @@ public interface TeacherRepository extends CrudRepository<Teacher, Integer> {
 
     Optional<Teacher> findById(Integer id);
 
+//    List<Teacher> findAllByCourseIdEquals(Integer courseId);
+
 }
