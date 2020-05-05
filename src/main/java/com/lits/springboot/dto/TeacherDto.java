@@ -13,6 +13,6 @@ public class TeacherDto {
     private String lastName;
     private Integer age;
 //    @Pattern(regexp = "(\\+380)[0-9]{9}")
-    private Integer phone;
+    private String phone;
 
 }
