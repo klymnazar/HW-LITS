@@ -32,7 +32,6 @@ public class Teacher implements Serializable {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Pattern(regexp = "(\\+380)[0-9]{9}")
     private String phone;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
