@@ -11,5 +11,5 @@ public interface TeacherService {
     void delete(Integer id);
     List<TeacherDto> getAll(String sortBy);
     TeacherDto create(String firstName, String lastName, Integer age);
-
+    List<TeacherDto> getAll();
 }

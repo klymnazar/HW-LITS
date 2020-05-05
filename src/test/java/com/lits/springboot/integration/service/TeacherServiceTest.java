@@ -2,16 +2,14 @@ package com.lits.springboot.integration.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.lits.springboot.dto.TeacherDto;
-import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.TeacherService;
 import com.lits.springboot.utils.ParseDataUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +21,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,8 +32,6 @@ public class TeacherServiceTest {
     private JdbcTemplate jdbcTemplate;
     @Mock
     private TeacherRepository teacherRepository;
-    @InjectMocks
-    private ModelMapper modelMapper;
 
     @Test
     public void getAll_retrieveTeacher_returnTeachersDto() throws IOException, URISyntaxException {
@@ -44,16 +39,14 @@ public class TeacherServiceTest {
         URI fileName = getClass().getClassLoader()
                 .getResource("integration/service/teacher/getAll/unsort/positive_data.sql").toURI();
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
-        List<Teacher> expected = ParseDataUtils
-                .prepareData("integration/service/teacher/getAll/unsort/expected.json", new TypeReference<List<Teacher>>() {});
+        List<TeacherDto> expected = ParseDataUtils
+                .prepareData("integration/service/teacher/getAll/unsort/expected.json", new TypeReference<List<TeacherDto>>() {});
 
         // Act
-        List<TeacherDto> teachersDto = teacherService.getAll(null);
-        List<Teacher> actual = teachersDto.stream()
-                .map(teacherDto -> modelMapper.map(teacherDto, Teacher.class)).collect(Collectors.toList());
+        List<TeacherDto> teachersDto = teacherService.getAll();
 
         // Assert
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teachersDto));
     }
 
     @Test
@@ -63,17 +56,16 @@ public class TeacherServiceTest {
         URI fileName = getClass().getClassLoader()
                 .getResource("integration/service/teacher/getAll/sort/positive_data.sql").toURI();
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
-        List<Teacher> expected = ParseDataUtils
-                .prepareData("integration/service/teacher/getAll/sort/expected.json", new TypeReference<List<Teacher>>() {});
+        List<TeacherDto> expected = ParseDataUtils
+                .prepareData("integration/service/teacher/getAll/sort/expected.json", new TypeReference<List<TeacherDto>>() {});
 
         // Act
         List<TeacherDto> teachersDto = teacherService.getAll(sortBy);
-        List<Teacher> actual = teachersDto.stream()
-                .map(teacherDto -> modelMapper.map(teacherDto, Teacher.class)).collect(Collectors.toList());
 
         // Assert
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teachersDto));
     }
+
 
     @Test
     public void update_name_returnTeacherDto() throws IOException, URISyntaxException {
@@ -81,15 +73,14 @@ public class TeacherServiceTest {
         URI fileName = getClass().getClassLoader()
                 .getResource("integration/service/teacher/update/positive_data.sql").toURI();
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
-        Teacher expected = ParseDataUtils
-                .prepareData("integration/service/teacher/update/expected.json", new TypeReference<Teacher>() {});
+        TeacherDto expected = ParseDataUtils
+                .prepareData("integration/service/teacher/update/expected.json", new TypeReference<TeacherDto>() {});
 
         // Act
         TeacherDto teacherDto = teacherService.update(1, "John", "Smith");
-        Teacher actual = modelMapper.map(teacherDto, Teacher.class);
 
         // Assert
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teacherDto));
     }
 
     @Test
@@ -101,10 +92,10 @@ public class TeacherServiceTest {
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
 
         // Act
-        List<TeacherDto> teacherDtos = teacherService.getAll(null);
+        List<TeacherDto> teacherDtos = teacherService.getAll();
         size = teacherDtos.size();
         teacherService.delete(1);
-        teacherDtos = teacherService.getAll(null);
+        teacherDtos = teacherService.getAll();
 
         // Assert
         Assert.assertEquals(size - 1, teacherDtos.size());
@@ -116,15 +107,14 @@ public class TeacherServiceTest {
         URI fileName = getClass().getClassLoader()
                 .getResource("integration/service/teacher/getOne/positive_data.sql").toURI();
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
-        Teacher expected = ParseDataUtils
-                .prepareData("integration/service/teacher/getOne/expected.json", new TypeReference<Teacher>() {});
+        TeacherDto expected = ParseDataUtils
+                .prepareData("integration/service/teacher/getOne/expected.json", new TypeReference<TeacherDto>() {});
 
         // Act
         TeacherDto teacherDto = teacherService.getOne(1);
-        Teacher actual = modelMapper.map(teacherDto, Teacher.class);
 
         // Assert
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teacherDto));
     }
 
     @Test
@@ -133,15 +123,14 @@ public class TeacherServiceTest {
         URI fileName = getClass().getClassLoader()
                 .getResource("integration/service/teacher/create/positive_data.sql").toURI();
         Files.lines(Paths.get(fileName)).forEach(line -> jdbcTemplate.update(line));
-        Teacher expected = ParseDataUtils
-                .prepareData("integration/service/teacher/create/expected.json", new TypeReference<Teacher>() {});
+        TeacherDto expected = ParseDataUtils
+                .prepareData("integration/service/teacher/create/expected.json", new TypeReference<TeacherDto>() {});
 
         // Act
         TeacherDto teacherDto = teacherService.create("Piter", "Pen", 23);
-        Teacher actual = modelMapper.map(teacherDto, Teacher.class);
 
         // Assert
-        Assert.assertEquals(actual, expected);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teacherDto));
     }
 
 }

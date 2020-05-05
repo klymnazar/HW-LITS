@@ -31,7 +31,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto update(Integer id, String newCourseName) {
-        Course course = modelMapper.map(getOne(id), Course.class);
+        Course course = modelMapper.map(courseRepository.findOneById(id), Course.class);
         course.setCourseName(newCourseName);
         return modelMapper.map(courseRepository.save(course), CourseDto.class);
     }
@@ -115,7 +115,7 @@ public class CourseServiceImpl implements CourseService {
         } else if (id < 0) {
             throw new CourseNotFoundException(format("Course with id : %d doesn't exist", id));
         } else {
-            course = courseRepository.findOneById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
+            course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
             return modelMapper.map(course, CourseDto.class);
         }
     }

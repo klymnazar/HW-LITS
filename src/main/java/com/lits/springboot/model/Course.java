@@ -1,5 +1,10 @@
 package com.lits.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,6 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "course")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Course {
 
     @Id
@@ -20,10 +26,14 @@ public class Course {
     private String courseName;
 
     @FutureOrPresent(message = "StartDate is not valid. Enter new Date.")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @FutureOrPresent(message = "EndDate is not valid. Enter new Date.")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 

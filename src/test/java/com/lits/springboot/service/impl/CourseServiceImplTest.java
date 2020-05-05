@@ -1,11 +1,15 @@
 package com.lits.springboot.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.lits.springboot.dto.CourseDto;
 import com.lits.springboot.exceptions.*;
+import com.lits.springboot.model.Course;
 import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
+import com.lits.springboot.utils.ParseDataUtils;
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +18,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {
@@ -35,6 +41,35 @@ public class CourseServiceImplTest {
     public void init() {
         courseService = new CourseServiceImpl(courseRepository, teacherRepository, modelMapper);
     }
+
+    @Test
+    public void create_course_courseDto() throws IOException {
+        //Arrange
+        CourseDto courseDto = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/create/positive_data.json", new TypeReference<>() {});
+
+        Course course = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/create/positive_data.json", new TypeReference<>() {});
+        Course expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/create/result.json", new TypeReference<>() {});
+
+        when(courseRepository.save(course)).thenReturn(course);
+
+        //Act
+        CourseDto courseDto1 = courseService.create(courseDto);
+        Course actual = modelMapper.map(courseDto, Course.class);
+
+        //Assert
+        Assert.assertEquals(expected, actual);
+    }
+
+
+
+
+
+
+
+
 
     @Test
     public void create_nullCourseName_CreateException() {

@@ -9,8 +9,6 @@ import com.lits.springboot.utils.ParseDataUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,8 +21,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,16 +36,14 @@ public class TeacherControllerTest {
     private TeacherService teacherService;
     @Autowired
     private ObjectMapper objectMapper;
-    @InjectMocks
-    ModelMapper modelMapper;
 
     @Test
     public void getAll_unsort_returnTeachers() throws Exception {
         List<TeacherDto> teacherDtos = ParseDataUtils
                 .prepareData("unit/serviceImpl/teacher/getAll/positive_data.json", new TypeReference<>() {});
-        when(teacherService.getAll(null)).thenReturn(teacherDtos);
-        List<Teacher> expected = teacherDtos.stream()
-                .map(teacherDto -> modelMapper.map(teacherDto, Teacher.class)).collect(Collectors.toList());
+        List<Teacher> expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/getAll/positive_data.json", new TypeReference<>() {});
+        when(teacherService.getAll()).thenReturn(teacherDtos);
 
         String result = this.mockMvc.
                 perform(MockMvcRequestBuilders.get("/teachers"))
@@ -65,9 +61,9 @@ public class TeacherControllerTest {
 
         List<TeacherDto> teacherDtos = ParseDataUtils
                 .prepareData("unit/serviceImpl/teacher/getAll/positive_data.json", new TypeReference<>() {});
+        List<Teacher> expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/getAll/positive_data.json", new TypeReference<>() {});
         when(teacherService.getAll(sortBy)).thenReturn(teacherDtos);
-        List<Teacher> expected = teacherDtos.stream().map(teacherDto -> modelMapper
-                .map(teacherDto, Teacher.class)).collect(Collectors.toList());
 
         String result = this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/teachers?sortBy=age"))
@@ -84,10 +80,10 @@ public class TeacherControllerTest {
         Integer id = 1;
 
         TeacherDto teacherDto = ParseDataUtils
-                .prepareData("unit/serviceImpl/teacher/getOne/positive_data.json", new TypeReference<>() {
-        });
-        when(teacherService.getOne(id)).thenReturn(teacherDto);
-        Teacher expected = modelMapper.map(teacherDto, Teacher.class);
+                .prepareData("unit/serviceImpl/teacher/getOne/positive_data.json", new TypeReference<>() {});
+        Teacher expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/getOne/positive_data.json", new TypeReference<>() {});
+        when(teacherService.getOne(eq(id))).thenReturn(teacherDto);
 
         String result = this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/teacher/" + id))
@@ -103,8 +99,9 @@ public class TeacherControllerTest {
         Integer id = 1;
         TeacherDto teacherDto = ParseDataUtils
                 .prepareData("unit/serviceImpl/teacher/update/firstName/positive_data.json", new TypeReference<>() {});
+        Teacher expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/update/firstName/positive_data.json", new TypeReference<>() {});
         when(teacherService.update(id, "John", "Smith")).thenReturn(teacherDto);
-        Teacher expected = modelMapper.map(teacherDto, Teacher.class);
 
         URI fileName = getClass().getClassLoader()
                 .getResource("unit/serviceImpl/teacher/update/firstName/positive_data.json")
@@ -136,8 +133,9 @@ public class TeacherControllerTest {
 
         TeacherDto teacherDto = ParseDataUtils
                 .prepareData("unit/serviceImpl/teacher/create/positive_data.json", new TypeReference<>() {});
+        Teacher expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/teacher/create/positive_data.json", new TypeReference<>() {});
         when(teacherService.create("Donald", "Duck", 30)).thenReturn(teacherDto);
-        Teacher expected = modelMapper.map(teacherDto, Teacher.class);
 
         URI fileName = getClass().getClassLoader()
                 .getResource("unit/serviceImpl/teacher/create/positive_data.json")
