@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class Teacher implements Serializable {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Column(name = "phone", nullable = false)
-    private Integer phone;
+    @Pattern(regexp = "(\\+380)[0-9]{9}")
+    private String phone;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "teacher_id")},
