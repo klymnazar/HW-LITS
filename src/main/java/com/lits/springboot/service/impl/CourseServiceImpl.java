@@ -57,12 +57,19 @@ public class CourseServiceImpl implements CourseService {
         return null;
     }
 
+//    @Override
+//    public CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos) {
+//        CourseDto courseDto = getOne(courseId);
+//        courseDto.setTeacherDtos(teacherDtos);
+//        return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
+//    }
+
     @Override
     public CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos) {
-        CourseDto courseDto = getOne(courseId);
-        courseDto.setTeacherDtos(teacherDtos);
-        return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
+        return null;
+
     }
+
 
     @Override
     public List<CourseDto> getAllCourses(String type, Integer numberMonths) {
@@ -100,10 +107,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDto create(CourseDto courseDto) {
+        Course course;
         if (courseDto.getCourseName() == null || courseDto.getStartDate() == null || courseDto.getEndDate() == null) {
             throw new CourseCreateException("New Course can not be created because all fields should not be null");
         } else {
-            return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
+            course = courseRepository.save(modelMapper.map(courseDto, Course.class));
+            return modelMapper.map(course, CourseDto.class);
         }
     }
 

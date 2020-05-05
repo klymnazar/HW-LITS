@@ -4,6 +4,7 @@ import com.lits.springboot.dto.TeacherDto;
 import com.lits.springboot.exceptions.TeacherCreateException;
 import com.lits.springboot.exceptions.TeacherNotFoundException;
 import com.lits.springboot.exceptions.TeacherRequestException;
+import com.lits.springboot.model.Course;
 import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.TeacherService;
@@ -44,7 +45,8 @@ public class TeacherServiceImpl implements TeacherService {
     public List<TeacherDto> getAll(String sortBy) {
         sortBy = "age";
         Sort sortByAge = Sort.by(sortBy).ascending();
-        return teacherRepository.findAll(sortByAge).stream().map(teacher -> modelMapper.map(teacher, TeacherDto.class)).collect(Collectors.toList());
+        List<Teacher> teachers = teacherRepository.findAll(sortByAge);
+        return teachers.stream().map(teacher -> modelMapper.map(teacher, TeacherDto.class)).collect(Collectors.toList());
     }
 
     @Override

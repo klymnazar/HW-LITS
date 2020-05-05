@@ -8,6 +8,7 @@ import com.lits.springboot.repository.CourseRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
 import com.lits.springboot.utils.ParseDataUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,9 +21,13 @@ import org.modelmapper.ModelMapper;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {
@@ -33,7 +38,6 @@ public class CourseServiceImplTest {
     private CourseRepository courseRepository;
     @Mock
     private TeacherRepository teacherRepository;
-
     @InjectMocks
     private ModelMapper modelMapper;
 
@@ -47,29 +51,85 @@ public class CourseServiceImplTest {
         //Arrange
         CourseDto courseDto = ParseDataUtils
                 .prepareData("unit/serviceImpl/course/create/positive_data.json", new TypeReference<>() {});
-
         Course course = ParseDataUtils
                 .prepareData("unit/serviceImpl/course/create/positive_data.json", new TypeReference<>() {});
-        Course expected = ParseDataUtils
-                .prepareData("unit/serviceImpl/teacher/create/result.json", new TypeReference<>() {});
-
+        CourseDto expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/create/result.json", new TypeReference<>() {});
         when(courseRepository.save(course)).thenReturn(course);
 
         //Act
-        CourseDto courseDto1 = courseService.create(courseDto);
-        Course actual = modelMapper.map(courseDto, Course.class);
+        CourseDto actual = courseService.create(courseDto);
 
         //Assert
-        Assert.assertEquals(expected, actual);
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
     }
 
+    @Test
+    public void update_newCourseName_courseDto() throws IOException {
+        //Arrange
+        CourseDto courseDto = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/update/positive_data.json", new TypeReference<>() {});
+        Course course = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/update/positive_data.json", new TypeReference<>() {});
+        CourseDto expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/update/result.json", new TypeReference<>() {});
+        when(courseRepository.findOneById(eq(1))).thenReturn(course);
+        when(courseRepository.save(course)).thenReturn(course);
 
+        //Act
+        CourseDto actual = courseService.update(1, "Java Advance");
 
+        //Assert
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
+    }
 
+    @Test
+    public void delete() throws IOException {
+        //Arrange
+        doNothing().when(courseRepository).deleteById(eq(1));
 
+        //Act
+        courseService.delete(1);
 
+        //Assert
+        verify(courseRepository, times(1)).deleteById(eq(1));
+    }
 
+    @Test
+    public void getAll_Courses() throws IOException {
+        //Arrange
+        List<CourseDto> courseDtos = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getAll/positive_data.json", new TypeReference<>() {});
+        List<Course> courses = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getAll/positive_data.json", new TypeReference<>() {});
+        List<CourseDto> expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getAll/result.json", new TypeReference<>() {});
+        when(courseRepository.findAll()).thenReturn(courses);
 
+        //Act
+        List<CourseDto> actual = courseService.getAll();
+
+        //Assert
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
+    }
+
+    @Test
+    public void getOne_courseId_course() throws IOException {
+        //Arrange
+        CourseDto courseDto = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getOne/positive_data.json", new TypeReference<>() {});
+        Course course = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getOne/positive_data.json", new TypeReference<>() {});
+        CourseDto expected = ParseDataUtils
+                .prepareData("unit/serviceImpl/course/getOne/result.json", new TypeReference<>() {});
+        when(courseRepository.findById(eq(1))).thenReturn(Optional.of(course));
+
+        //Act
+        CourseDto actual = courseService.getOne(1);
+
+        //Assert
+        Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
+    }
 
     @Test
     public void create_nullCourseName_CreateException() {

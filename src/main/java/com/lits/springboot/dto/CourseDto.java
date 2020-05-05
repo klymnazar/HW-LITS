@@ -22,7 +22,7 @@ public class CourseDto {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate endDate;
-    private List<TeacherDto> teacherDtos;
+//    private List<TeacherDto> teacherDtos;
     private List<Integer> teacherIds;
 
 }
