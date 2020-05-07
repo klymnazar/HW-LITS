@@ -1,10 +1,9 @@
 package com.lits.springboot.service.impl;
 
 import com.lits.springboot.dto.TeacherDto;
-import com.lits.springboot.exceptions.TeacherCreateException;
-import com.lits.springboot.exceptions.TeacherNotFoundException;
-import com.lits.springboot.exceptions.TeacherRequestException;
-import com.lits.springboot.model.Course;
+import com.lits.springboot.exceptions.teacher.TeacherCreateException;
+import com.lits.springboot.exceptions.teacher.TeacherNotFoundException;
+import com.lits.springboot.exceptions.teacher.TeacherRequestException;
 import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.TeacherService;
@@ -74,6 +73,17 @@ public class TeacherServiceImpl implements TeacherService {
             throw new TeacherCreateException("New Teacher can not be created because all fields should not be null");
         } else {
             teacher = teacherRepository.save(new Teacher(firstName, lastName, age));
+            return modelMapper.map(teacher, TeacherDto.class);
+        }
+    }
+
+    @Override
+    public TeacherDto getOneByPhone(String phone) {
+        Teacher teacher;
+        if (phone == null) {
+            throw new TeacherRequestException("Enter Teacher phone");
+        } else {
+            teacher = teacherRepository.findByPhone(phone).orElseThrow(() -> new TeacherNotFoundException(format("Teacher with phone : %s doesn't exist", phone)));
             return modelMapper.map(teacher, TeacherDto.class);
         }
     }

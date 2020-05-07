@@ -2,9 +2,12 @@ package com.lits.springboot.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.lits.springboot.dto.CourseDto;
-import com.lits.springboot.exceptions.*;
+import com.lits.springboot.exceptions.course.CourseCreateException;
+import com.lits.springboot.exceptions.course.CourseNotFoundException;
+import com.lits.springboot.exceptions.course.CourseRequestException;
 import com.lits.springboot.model.Course;
 import com.lits.springboot.repository.CourseRepository;
+import com.lits.springboot.repository.StudentRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
 import com.lits.springboot.utils.ParseDataUtils;
@@ -38,12 +41,14 @@ public class CourseServiceImplTest {
     private CourseRepository courseRepository;
     @Mock
     private TeacherRepository teacherRepository;
+    @Mock
+    private StudentRepository studentRepository;
     @InjectMocks
     private ModelMapper modelMapper;
 
     @Before
     public void init() {
-        courseService = new CourseServiceImpl(courseRepository, teacherRepository, modelMapper);
+        courseService = new CourseServiceImpl(courseRepository, teacherRepository, studentRepository, modelMapper);
     }
 
     @Test

@@ -1,1 +1,0 @@
-ALTER TABLE teacher ADD COLUMN phone VARCHAR(11);

@@ -1,6 +1,8 @@
 package com.lits.springboot.repository;
 
 import com.lits.springboot.model.Course;
+import com.lits.springboot.model.Student;
+import com.lits.springboot.model.Teacher;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -28,5 +30,9 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
     List<Course> findAllCoursesDurationMonths(Integer startDays, Integer endDays);
 
     List<Course> findAllByOrderByStartDateAsc();
+
+    List<Course> findAllByStudentsContaining(Student student);
+
+    List<Course> findAllByStudentsContainingAndTeachersContaining(Student student, Teacher teacher);
 
 }

@@ -1,7 +1,6 @@
 package com.lits.springboot.service;
 
 import com.lits.springboot.dto.CourseDto;
-import com.lits.springboot.dto.TeacherDto;
 import com.lits.springboot.model.Course;
 
 import java.util.List;
@@ -15,7 +14,11 @@ public interface CourseService {
     List<CourseDto> getAll();
     List<String> getAllCoursesWithoutTeacher();
     Course updateCourseTeacher(Integer courseId, Integer teacherId);
-    CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos);
+    CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds);
     List<CourseDto> getAllCourses(String type, Integer numberMonth);
 
+    CourseDto addStudentsToCourse(Integer courseId, List<Integer> studentIds);
+    CourseDto removeStudentsFromCourse(Integer courseId, List<Integer> studentIds);
+    List<CourseDto> getAllCourseByStudent(Integer studentId);
+    List<CourseDto> getAllCourseByStudentAndTeacher(Integer studentId, Integer teacherId);
 }

@@ -2,9 +2,9 @@ package com.lits.springboot.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.lits.springboot.dto.TeacherDto;
-import com.lits.springboot.exceptions.TeacherCreateException;
-import com.lits.springboot.exceptions.TeacherNotFoundException;
-import com.lits.springboot.exceptions.TeacherRequestException;
+import com.lits.springboot.exceptions.teacher.TeacherCreateException;
+import com.lits.springboot.exceptions.teacher.TeacherNotFoundException;
+import com.lits.springboot.exceptions.teacher.TeacherRequestException;
 import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.TeacherService;
@@ -20,10 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;

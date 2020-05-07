@@ -1,10 +1,14 @@
 package com.lits.springboot.service.impl;
 
 import com.lits.springboot.dto.CourseDto;
-import com.lits.springboot.dto.TeacherDto;
-import com.lits.springboot.exceptions.*;
+import com.lits.springboot.exceptions.course.CourseCreateException;
+import com.lits.springboot.exceptions.course.CourseNotFoundException;
+import com.lits.springboot.exceptions.course.CourseRequestException;
 import com.lits.springboot.model.Course;
+import com.lits.springboot.model.Student;
+import com.lits.springboot.model.Teacher;
 import com.lits.springboot.repository.CourseRepository;
+import com.lits.springboot.repository.StudentRepository;
 import com.lits.springboot.repository.TeacherRepository;
 import com.lits.springboot.service.CourseService;
 import org.modelmapper.ModelMapper;
@@ -21,11 +25,13 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
 
-    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, ModelMapper modelMapper) {
+    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, StudentRepository studentRepository, ModelMapper modelMapper) {
         this.courseRepository = courseRepository;
         this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -57,19 +63,18 @@ public class CourseServiceImpl implements CourseService {
         return null;
     }
 
-//    @Override
-//    public CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos) {
-//        CourseDto courseDto = getOne(courseId);
-//        courseDto.setTeacherDtos(teacherDtos);
-//        return modelMapper.map(courseRepository.save(modelMapper.map(courseDto, Course.class)), CourseDto.class);
-//    }
-
     @Override
-    public CourseDto addTeachersToCourse(Integer courseId, List<TeacherDto> teacherDtos) {
-        return null;
-
+    public CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds) {
+        Course course = courseRepository.findOneById(courseId);
+        List<Teacher> teachers = course.getTeachers();
+        for (Integer teacherId : teacherIds) {
+            teachers.add(teacherRepository.findOneById(teacherId));
+        }
+        courseRepository.save(course);
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        courseDto.setTeacherIds(teacherIds);
+        return courseDto;
     }
-
 
     @Override
     public List<CourseDto> getAllCourses(String type, Integer numberMonths) {
@@ -127,6 +132,50 @@ public class CourseServiceImpl implements CourseService {
             course = courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(format("Course with id : %d doesn't exist", id)));
             return modelMapper.map(course, CourseDto.class);
         }
+    }
+
+    @Override
+    public CourseDto addStudentsToCourse(Integer courseId, List<Integer> studentIds) {
+        Course course = courseRepository.findOneById(courseId);
+        List<Student> students = course.getStudents();
+        for (Integer studentId : studentIds) {
+            students.add(studentRepository.findOneById(studentId));
+        }
+        courseRepository.save(course);
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        courseDto.setStudentIds(studentIds);
+        return courseDto;
+    }
+
+    @Override
+    public CourseDto removeStudentsFromCourse(Integer courseId, List<Integer> studentIds) {
+        Course course = courseRepository.findOneById(courseId);
+        List<Student> students = course.getStudents();
+        for (Integer studentId : studentIds) {
+            int id = studentIds.indexOf(studentId);
+            students.remove(id);
+        }
+        courseRepository.save(course);
+        CourseDto courseDto = modelMapper.map(course, CourseDto.class);
+        courseDto.setStudentIds(studentIds);
+        return courseDto;
+    }
+
+    @Override
+    public List<CourseDto> getAllCourseByStudent(Integer studentId) {
+        Student student = studentRepository.findOneById(studentId);
+        List<Course> courses = courseRepository.findAllByStudentsContaining(student);
+        List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
+        return courseDtos;
+    }
+
+    @Override
+    public List<CourseDto> getAllCourseByStudentAndTeacher(Integer studentId, Integer teacherId) {
+        Student student = studentRepository.findOneById(studentId);
+        Teacher teacher = teacherRepository.findOneById(teacherId);
+        List<Course> courses = courseRepository.findAllByStudentsContainingAndTeachersContaining(student, teacher);
+        List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
+        return courseDtos;
     }
 
 }

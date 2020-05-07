@@ -25,6 +25,12 @@ public class TeacherController {
         return teacherService.getOne(id);
     }
 
+    @GetMapping("/teacher")
+    public TeacherDto getByPhone(@RequestParam(name = "getBy", required = false) String getBy) {
+        log.info("Get teacher by phone = " + getBy);
+        return teacherService.getOneByPhone(getBy);
+    }
+
     @GetMapping("/teachers")
     public List<TeacherDto> getAll(@RequestParam(name = "sortBy", required = false) String sortBy) {
         List<TeacherDto> teacherDtos;

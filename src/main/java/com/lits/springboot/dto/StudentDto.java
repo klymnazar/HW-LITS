@@ -4,14 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Getter
 @Setter
-public class TeacherDto {
+public class StudentDto {
     private Integer id;
     private String firstName;
     private String lastName;
     private Integer age;
-    @Pattern(regexp = "(\\+380)[0-9]{9}")
-    private String phone;
+    private List<Integer> courseIds;
 }

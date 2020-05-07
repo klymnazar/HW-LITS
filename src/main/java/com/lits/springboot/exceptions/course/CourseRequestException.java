@@ -1,12 +1,12 @@
-package com.lits.springboot.exceptions;
+package com.lits.springboot.exceptions.course;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class TeacherRequestException extends RuntimeException {
+public class CourseRequestException extends RuntimeException {
 
-    public TeacherRequestException(String msg) {
+    public CourseRequestException(String msg) {
         super(msg);
     }
 }

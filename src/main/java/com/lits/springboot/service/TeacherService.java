@@ -12,4 +12,5 @@ public interface TeacherService {
     List<TeacherDto> getAll(String sortBy);
     TeacherDto create(String firstName, String lastName, Integer age);
     List<TeacherDto> getAll();
+    TeacherDto getOneByPhone(String phone);
 }
