@@ -26,9 +26,9 @@ public class TeacherController {
     }
 
     @GetMapping("/teacher")
-    public TeacherDto getByPhone(@RequestParam(name = "getBy", required = false) String getBy) {
-        log.info("Get teacher by phone = " + getBy);
-        return teacherService.getOneByPhone(getBy);
+    public TeacherDto getByPhone(@RequestParam(name = "phone", required = false) String phone) {
+        log.info("Get teacher by phone = " + phone);
+        return teacherService.getOneByPhone(phone);
     }
 
     @GetMapping("/teachers")

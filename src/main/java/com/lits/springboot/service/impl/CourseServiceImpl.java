@@ -164,7 +164,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDto> getAllCourseByStudent(Integer studentId) {
         Student student = studentRepository.findOneById(studentId);
-        List<Course> courses = courseRepository.findAllByStudentsContaining(student);
+        List<Course> courses = courseRepository.findAllByStudentsContaining(student).get();
         List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
         return courseDtos;
     }
@@ -173,7 +173,7 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseDto> getAllCourseByStudentAndTeacher(Integer studentId, Integer teacherId) {
         Student student = studentRepository.findOneById(studentId);
         Teacher teacher = teacherRepository.findOneById(teacherId);
-        List<Course> courses = courseRepository.findAllByStudentsContainingAndTeachersContaining(student, teacher);
+        List<Course> courses = courseRepository.findAllByStudentsContainingAndTeachersContaining(student, teacher).get();
         List<CourseDto> courseDtos = courses.stream().map(course -> modelMapper.map(course, CourseDto.class)).collect(Collectors.toList());
         return courseDtos;
     }

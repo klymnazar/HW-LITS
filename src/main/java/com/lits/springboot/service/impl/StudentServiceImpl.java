@@ -1,7 +1,6 @@
 package com.lits.springboot.service.impl;
 
 import com.lits.springboot.dto.StudentDto;
-import com.lits.springboot.exceptions.student.StudentCreateException;
 import com.lits.springboot.exceptions.student.StudentNotFoundException;
 import com.lits.springboot.exceptions.student.StudentRequestException;
 import com.lits.springboot.model.Student;
@@ -32,12 +31,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDto create(String firstName, String lastName, Integer age) {
         Student student;
-        if (firstName == null || lastName == null || age == null) {
-            throw new StudentCreateException("New Student can not be created because all fields should not be null");
-        } else {
-            student = studentRepository.save(new Student(firstName, lastName, age));
-            return modelMapper.map(student, StudentDto.class);
-        }
+        student = studentRepository.save(new Student(firstName, lastName, age));
+        return modelMapper.map(student, StudentDto.class);
     }
 
     @Override
@@ -46,12 +41,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDto update(Integer id, String newFirstName, String newLastName, Integer newAge) {
-        Student student = studentRepository.findOneById(id);
-        student.setFirstName(newFirstName);
-        student.setLastName(newLastName);
-        student.setAge(newAge);
-        return modelMapper.map(studentRepository.save(student), StudentDto.class);
+    public StudentDto update(StudentDto newStudentDto) {
+       Student newStudent = modelMapper.map(newStudentDto, Student.class);
+       return modelMapper.map(studentRepository.save(newStudent), StudentDto.class);
     }
 
     @Override

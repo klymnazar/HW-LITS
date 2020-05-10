@@ -31,8 +31,7 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
     List<Course> findAllByOrderByStartDateAsc();
 
-    List<Course> findAllByStudentsContaining(Student student);
+    Optional<List<Course>> findAllByStudentsContaining(Student student);
 
-    List<Course> findAllByStudentsContainingAndTeachersContaining(Student student, Teacher teacher);
-
+    Optional<List<Course>> findAllByStudentsContainingAndTeachersContaining(Student student, Teacher teacher);
 }

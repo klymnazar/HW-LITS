@@ -7,6 +7,7 @@ import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,9 +36,10 @@ public class StudentController {
     }
 
     @PutMapping("/student/{id}")
-    public StudentDto update(@PathVariable(name = "id") Integer id, @RequestBody StudentDto studentDto) {
+    public StudentDto update(@PathVariable(name = "id") Integer id, @RequestBody @Valid StudentDto studentDto) {
         log.info("Update student by id = " + id);
-        return studentService.update(id, studentDto.getFirstName(), studentDto.getLastName(), studentDto.getAge());
+        studentDto.setId(id);
+        return studentService.update(studentDto);
     }
 
     @DeleteMapping("/student/{id}")
@@ -49,7 +51,7 @@ public class StudentController {
 
     @PostMapping("/student")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public StudentDto create(@RequestBody StudentDto studentDto) {
+    public StudentDto create(@RequestBody @Valid StudentDto studentDto) {
         log.info("Create new student");
         return studentService.create(studentDto.getFirstName(), studentDto.getLastName(), studentDto.getAge());
     }
