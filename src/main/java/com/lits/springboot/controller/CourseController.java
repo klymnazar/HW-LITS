@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/courses")
 @Log
 public class CourseController {
 
@@ -25,32 +26,32 @@ public class CourseController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/courses/course/{courseId}")
+    @GetMapping("/course/{courseId}")
     public CourseDto getById(@PathVariable(name = "courseId") Integer courseId) {
         log.info("Get course by courseId = " + courseId);
         return courseService.getOne(courseId);
     }
 
-    @GetMapping("/courses")
+    @GetMapping()
     public List<CourseDto> getAllCourses(@RequestParam(name = "durationType", required = false) String durationType,
                                          @RequestParam(name = "durationMonths", required = false) Integer durationMonths) {
         log.info("Get all courses");
         return courseService.getAllCourses(durationType, durationMonths);
     }
 
-    @GetMapping("/courses/student/{studentId}")
+    @GetMapping("/student/{studentId}")
     public List<CourseDto> getAllCoursesByStudent(@PathVariable(name = "studentId") Integer studentId) {
         log.info("Get all courses by Student");
         return courseService.getAllCourseByStudent(studentId);
     }
 
-    @GetMapping("/courses/student/{studentId}/count")
+    @GetMapping("/student/{studentId}/count")
     public Integer countAllCoursesByStudent(@PathVariable(name = "studentId") Integer studentId) {
         log.info("Count all courses by Student");
         return courseService.getAllCourseByStudent(studentId).size();
     }
 
-    @GetMapping("/courses/student/{studentId}/teacher/{teacherId}")
+    @GetMapping("/student/{studentId}/teacher/{teacherId}")
     public List<CourseDto> getAllCoursesByStudentAndTeacher(@PathVariable(name = "studentId") Integer studentId, @PathVariable(name = "teacherId") Integer teacherId) {
         log.info("Get all courses by Student and Teacher");
         return courseService.getAllCourseByStudentAndTeacher(studentId, teacherId);
@@ -58,13 +59,13 @@ public class CourseController {
 
 
 
-    @PutMapping("/courses/{courseId}")
+    @PutMapping("/course/{courseId}")
     public CourseDto update(@PathVariable(name = "courseId") Integer courseId, @RequestBody CourseDto courseDto) {
         log.info("Update course by courseId = " + courseId);
         return courseService.update(courseId, courseDto.getCourseName());
     }
 
-    @PutMapping("/courses/{courseId}/students")
+    @PutMapping("/course/{courseId}/students")
     public CourseDto addStudents(@PathVariable(name = "courseId") Integer courseId, @RequestBody CourseDto courseDto) {
         List<Integer> studentIds = new ArrayList<>();
         for (Integer studentId : courseDto.getStudentIds()) {
@@ -74,7 +75,7 @@ public class CourseController {
         return courseService.addStudentsToCourse(courseId, studentIds);
     }
 
-    @PutMapping("/courses/{courseId}/teachers")
+    @PutMapping("/course/{courseId}/teachers")
     public CourseDto addTeachers(@PathVariable(name = "courseId") Integer courseId, @RequestBody CourseDto courseDto) {
         List<Integer> teacherIds = new ArrayList<>();
         for (Integer teacherId : courseDto.getTeacherIds()) {
@@ -86,7 +87,7 @@ public class CourseController {
 
 
 
-    @PostMapping("/courses")
+    @PostMapping("/course")
     @ResponseStatus(value = HttpStatus.CREATED)
     public CourseDto create(@RequestBody CourseDto courseDto) {
         log.info("Create new course");
@@ -95,14 +96,14 @@ public class CourseController {
 
 
 
-    @DeleteMapping("/courses/{courseId}")
+    @DeleteMapping("/course/{courseId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void delete(@PathVariable(name = "courseId") Integer courseId) {
         log.info("Delete course by courseId = " + courseId);
         courseService.delete(courseId);
     }
 
-    @DeleteMapping("/courses/{courseId}/students")
+    @DeleteMapping("/course/{courseId}/students")
     public CourseDto removeStudents(@PathVariable(name = "courseId") Integer courseId, @RequestBody CourseDto courseDto) {
         List<Integer> studentIds = new ArrayList<>();
         for (Integer studentId : courseDto.getStudentIds()) {
