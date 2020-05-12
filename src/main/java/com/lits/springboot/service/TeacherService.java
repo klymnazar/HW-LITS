@@ -1,19 +1,16 @@
 package com.lits.springboot.service;
 
-import com.lits.springboot.model.Teacher;
+import com.lits.springboot.dto.TeacherDto;
 
 import java.util.List;
 
 public interface TeacherService {
 
-    Teacher create(String firstName, String lastName, Integer age);
-
-    Teacher getOne(Integer id);
-
-    Teacher update(Integer id, String newFirstName, String newLastName);
-
+    TeacherDto getOne(Integer id);
+    TeacherDto update(Integer id, String newFirstName, String newLastName);
     void delete(Integer id);
-
-    List<Teacher> getAll(String sortBy);
-
+    List<TeacherDto> getAll(String sortBy);
+    TeacherDto create(String firstName, String lastName, Integer age);
+    List<TeacherDto> getAll();
+    TeacherDto getOneByPhone(String phone);
 }

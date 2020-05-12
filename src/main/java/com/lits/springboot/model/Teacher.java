@@ -1,9 +1,16 @@
 package com.lits.springboot.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "teacher")
 public class Teacher implements Serializable {
@@ -12,65 +19,28 @@ public class Teacher implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "FirstName is not valid. Enter firstName.")
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @NotBlank(message = "LastName is not valid. Enter lastName.")
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @DecimalMin(value = "16", message = "Age is not valid. Enter age greater 16")
     @Column(name = "age", nullable = false)
     private Integer age;
 
+    private String phone;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "teacher_id")}, inverseJoinColumns = {@JoinColumn(name = "course_id")})
+    @JoinTable(name = "teacher_course", joinColumns = {@JoinColumn(name = "teacher_id")},
+            inverseJoinColumns = {@JoinColumn(name = "course_id")})
     private List<Course> courseList;
-
-    public List<Course> getCourseList() {
-        return courseList;
-    }
-
-    public void setCourseList(List<Course> courseList) {
-        this.courseList = courseList;
-    }
-
-    public Teacher() {
-    }
 
     public Teacher(String firstName, String lastName, Integer age) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.age = age;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
         this.age = age;
     }
 }
