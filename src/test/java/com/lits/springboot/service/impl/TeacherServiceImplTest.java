@@ -107,10 +107,10 @@ public class TeacherServiceImplTest {
         TeacherDto expected = ParseDataUtils.prepareData("unit/serviceImpl/teacher/create/result.json", new TypeReference<>() {
         });
 
-        when(teacherRepository.save(new Teacher(teacher.getFirstName(), teacher.getLastName(), teacher.getAge()))).thenReturn(new Teacher(teacher.getFirstName(), teacher.getLastName(), teacher.getAge()));
+        when(teacherRepository.save(new Teacher(teacher.getFirstName(), teacher.getLastName(), teacher.getAge(), teacher.getPhone()))).thenReturn(new Teacher(teacher.getFirstName(), teacher.getLastName(), teacher.getAge(), teacher.getPhone()));
 
         //Act
-        TeacherDto actual = teacherService.create(teacher.getFirstName(), teacher.getLastName(), teacher.getAge());
+        TeacherDto actual = teacherService.create(teacher.getFirstName(), teacher.getLastName(), teacher.getAge(), teacher.getPhone());
 //        Teacher actual = modelMapper.map(teacherDto, Teacher.class);
 
         //Assert
@@ -169,7 +169,7 @@ public class TeacherServiceImplTest {
     public void create_nullFirstName_CreateException() {
         //Arrange
         //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create(null, "Smith", 21));
+        Throwable thrown = catchThrowable(() -> teacherService.create(null, "Smith", 21, "+380979766297"));
         //Assert
         Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
     }
@@ -178,7 +178,7 @@ public class TeacherServiceImplTest {
     public void create_nullLastName_CreateException() {
         //Arrange
         //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create("John", null, 21));
+        Throwable thrown = catchThrowable(() -> teacherService.create("John", null, 21, "+380979766297"));
         //Assert
         Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
     }
@@ -187,7 +187,7 @@ public class TeacherServiceImplTest {
     public void create_nullAge_CreateException() {
         //Arrange
         //Act
-        Throwable thrown = catchThrowable(() -> teacherService.create("John", "Smith", null));
+        Throwable thrown = catchThrowable(() -> teacherService.create("John", "Smith", null, "+380979766297"));
         //Assert
         Assertions.assertThat(thrown).isInstanceOf(TeacherCreateException.class);
     }

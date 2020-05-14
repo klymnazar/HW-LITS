@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,8 +36,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            var creds = new ObjectMapper().readValue(req.getInputStream(), UserDto.class);
-            var auth = authenticationManager.authenticate(
+            UserDto creds = new ObjectMapper().readValue(req.getInputStream(), UserDto.class);
+            Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(creds.getUsername(), creds.getPassword(), new ArrayList<>()));
             return auth;
         } catch (Exception e) {
@@ -51,12 +50,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) throws IOException {
-        var user = (User) auth.getPrincipal();
-        var userDto = userService.getByUsername(user.getUsername());
+    protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        UserDto userDto = userService.getByUsername(user.getUsername());
         userDto.setPassword(null);
 
-        var token = JWT.create()
+        String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withClaim(USER_ID_PARAM, userDto.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.lang.String.format;
 
 @Service
@@ -34,5 +37,24 @@ public class UserServiceImpl implements UserService {
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         return userRepository.save(user).getId();
     }
+
+    @Override
+    public List<UserDto> getAll() {
+        return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDto update(UserDto newUserDto) {
+        User newUser = modelMapper.map(newUserDto, User.class);
+        newUser.setPassword(bCryptPasswordEncoder.encode(newUserDto.getPassword()));
+        return modelMapper.map(userRepository.save(newUser), UserDto.class);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        userRepository.deleteById(id);
+    }
+
+
 
 }

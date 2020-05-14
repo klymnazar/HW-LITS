@@ -135,7 +135,7 @@ public class TeacherControllerTest {
                 .prepareData("unit/serviceImpl/teacher/create/positive_data.json", new TypeReference<>() {});
         Teacher expected = ParseDataUtils
                 .prepareData("unit/serviceImpl/teacher/create/positive_data.json", new TypeReference<>() {});
-        when(teacherService.create("Donald", "Duck", 30)).thenReturn(teacherDto);
+        when(teacherService.create("Donald", "Duck", 30, "+380979766297")).thenReturn(teacherDto);
 
         URI fileName = getClass().getClassLoader()
                 .getResource("unit/serviceImpl/teacher/create/positive_data.json")

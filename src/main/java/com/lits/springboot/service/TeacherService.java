@@ -10,7 +10,7 @@ public interface TeacherService {
     TeacherDto update(Integer id, String newFirstName, String newLastName);
     void delete(Integer id);
     List<TeacherDto> getAll(String sortBy);
-    TeacherDto create(String firstName, String lastName, Integer age);
+    TeacherDto create(String firstName, String lastName, Integer age, String phone);
     List<TeacherDto> getAll();
     TeacherDto getOneByPhone(String phone);
 }

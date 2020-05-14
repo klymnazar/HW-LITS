@@ -38,9 +38,10 @@ public class Teacher implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "course_id")})
     private List<Course> courseList;
 
-    public Teacher(String firstName, String lastName, Integer age) {
+    public Teacher(String firstName, String lastName, Integer age, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.phone = phone;
     }
 }

@@ -67,12 +67,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public TeacherDto create(String firstName, String lastName, Integer age) {
+    public TeacherDto create(String firstName, String lastName, Integer age, String phone) {
         Teacher teacher;
         if (firstName == null || lastName == null || age == null) {
             throw new TeacherCreateException("New Teacher can not be created because all fields should not be null");
         } else {
-            teacher = teacherRepository.save(new Teacher(firstName, lastName, age));
+            teacher = teacherRepository.save(new Teacher(firstName, lastName, age, phone));
             return modelMapper.map(teacher, TeacherDto.class);
         }
     }

@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-//@RequestMapping("/students")
+@RequestMapping("/students")
 @Log
 public class StudentController {
 
@@ -23,30 +23,30 @@ public class StudentController {
         this.courseService = courseService;
     }
 
-    @GetMapping("student/{id}")
-    public StudentDto getById(@PathVariable(name = "id") Integer id) {
-        log.info("Get student by id = " + id);
-        return studentService.getOne(id);
+    @GetMapping("student/{studentId}")
+    public StudentDto getById(@PathVariable(name = "studentId") Integer studentId) {
+        log.info("Get student by studentId = " + studentId);
+        return studentService.getOne(studentId);
     }
 
-    @GetMapping("/students")
+    @GetMapping
     public List<StudentDto> getAll() {
         log.info("Get all students");
         return studentService.getAll();
     }
 
-    @PutMapping("/student/{id}")
-    public StudentDto update(@PathVariable(name = "id") Integer id, @RequestBody @Valid StudentDto studentDto) {
-        log.info("Update student by id = " + id);
-        studentDto.setId(id);
+    @PutMapping("/student/{studentId}")
+    public StudentDto update(@PathVariable(name = "studentId") Integer studentId, @RequestBody @Valid StudentDto studentDto) {
+        log.info("Update student by studentId = " + studentId);
+        studentDto.setId(studentId);
         return studentService.update(studentDto);
     }
 
-    @DeleteMapping("/student/{id}")
+    @DeleteMapping("/student/{studentId}")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public void delete(@PathVariable(name = "id") Integer id) {
-        log.info("Delete student by id= " + id);
-        studentService.delete(id);
+    public void delete(@PathVariable(name = "studentId") Integer studentId) {
+        log.info("Delete student by studentId = " + studentId);
+        studentService.delete(studentId);
     }
 
     @PostMapping("/student")

@@ -127,7 +127,7 @@ public class TeacherServiceTest {
                 .prepareData("integration/service/teacher/create/expected.json", new TypeReference<TeacherDto>() {});
 
         // Act
-        TeacherDto teacherDto = teacherService.create("Piter", "Pen", 23);
+        TeacherDto teacherDto = teacherService.create("Piter", "Pen", 23, "+380979766297");
 
         // Assert
         Assert.assertTrue(EqualsBuilder.reflectionEquals(expected, teacherDto));

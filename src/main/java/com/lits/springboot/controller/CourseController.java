@@ -32,7 +32,7 @@ public class CourseController {
         return courseService.getOne(courseId);
     }
 
-    @GetMapping()
+    @GetMapping
     public List<CourseDto> getAllCourses(@RequestParam(name = "durationType", required = false) String durationType,
                                          @RequestParam(name = "durationMonths", required = false) Integer durationMonths) {
         log.info("Get all courses");
