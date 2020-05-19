@@ -1,41 +1,24 @@
 package com.lits.springboot.service;
 
+import com.lits.springboot.dto.CourseDto;
 import com.lits.springboot.model.Course;
-import com.lits.springboot.model.Teacher;
 
 import java.util.List;
 
 public interface CourseService {
 
-    Course create(Course course);
-
-    Course getOne(Integer id);
-
-    Course update(Integer id, String newCourseName, Teacher teacher);
-
+    CourseDto create(CourseDto courseDto);
+    CourseDto getOne(Integer id);
+    CourseDto update(Integer id, String newCourseName);
     void delete(Integer id);
-
-    List<Course> getAll();
-
+    List<CourseDto> getAll();
     List<String> getAllCoursesWithoutTeacher();
-
     Course updateCourseTeacher(Integer courseId, Integer teacherId);
+    CourseDto addTeachersToCourse(Integer courseId, List<Integer> teacherIds);
+    List<CourseDto> getAllCourses(String type, Integer numberMonth);
 
-    Course addTeachersToCourse(Integer courseId, List<Teacher> teachers);
-
-///////////////////////////////
-
-//    List<Course> getAllOrderByDate();
-//
-//    List<Course> getAllAfterDate();
-//
-//    List<Course> getAllBeforeDate();
-//
-//    List<Course> getAllContinuesNow();
-//
-//    List<Course> getAllCoursesDurationMonths(int numberMonths);
-
-    List<Course> getAllCourses(String type, Integer numberMonth);
-
-//    List<Course> getAllCoursesDuration(Integer month);
+    CourseDto addStudentsToCourse(Integer courseId, List<Integer> studentIds);
+    CourseDto removeStudentsFromCourse(Integer courseId, List<Integer> studentIds);
+    List<CourseDto> getAllCourseByStudent(Integer studentId);
+    List<CourseDto> getAllCourseByStudentAndTeacher(Integer studentId, Integer teacherId);
 }
