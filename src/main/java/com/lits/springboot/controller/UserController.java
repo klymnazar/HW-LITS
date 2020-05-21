@@ -26,16 +26,27 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+//    @PostMapping("/sign-up")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Integer signUp(@RequestBody @Valid UserDto userDto) {
+//        Integer userId;
+//        if (userDto.getRole().equals("USER") || userDto.getRole().equals("STUDENT") || userDto.getRole().equals("TEACHER") || userDto.getRole().equals("ADMIN")) {
+//            log.info("Create new user");
+//            userId = userService.create(userDto);
+//        } else {
+//            throw new UserCreateException(format("Incorrect user role = %s. Enter the correct user role (USER, STUDENT, TEACHER, ADMIN)", userDto.getRole()));
+//        }
+//        return userId;
+//    }
+
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public Integer signUp(@RequestBody @Valid UserDto userDto) {
         Integer userId;
-        if (userDto.getRole().equals("USER") || userDto.getRole().equals("STUDENT") || userDto.getRole().equals("TEACHER") || userDto.getRole().equals("ADMIN")) {
+
             log.info("Create new user");
             userId = userService.create(userDto);
-        } else {
-            throw new UserCreateException(format("Incorrect user role = %s. Enter the correct user role (USER, STUDENT, TEACHER, ADMIN)", userDto.getRole()));
-        }
+
         return userId;
     }
 
@@ -47,12 +58,12 @@ public class UserController {
 
     @PutMapping("/user/{userId}")
     public UserDto update(@PathVariable(name = "userId") Integer userId, @RequestBody @Valid UserDto userDto) {
-        if (userDto.getRole().equals("USER") || userDto.getRole().equals("STUDENT") || userDto.getRole().equals("TEACHER") || userDto.getRole().equals("ADMIN")) {
+        if (userDto.getRoles().equals("USER") || userDto.getRoles().equals("STUDENT") || userDto.getRoles().equals("TEACHER") || userDto.getRoles().equals("ADMIN")) {
             log.info("Update student by userId = " + userId);
             userDto.setId(userId);
             userService.update(userDto);
         } else {
-            throw new UserCreateException(format("Incorrect user role = %s. Enter the correct user role (USER, STUDENT, TEACHER, ADMIN)", userDto.getRole()));
+            throw new UserCreateException(format("Incorrect user role = %s. Enter the correct user role (USER, STUDENT, TEACHER, ADMIN)", userDto.getRoles()));
         }
         return userDto;
     }
